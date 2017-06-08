@@ -13,6 +13,11 @@ cd pg_driver
 ln -s <path-to-spinnaker-lib> lib
 ```
 * run catkin_make to install
+```bash
+roscd
+cd ..
+catkin_make
+```
 
 ## Running
 ```bash
