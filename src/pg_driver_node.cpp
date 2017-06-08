@@ -205,13 +205,6 @@ int main(int argc, char** argv)
         }
         else
         {
-            // TODO This part in else is not necessary after we could
-            // directly transform the ImagePtr message into ros_image message, but we don't know the format of the
-            // ImagePtr dataset. So the only thing last is to transform ImagePtr into opencv cv::Mat
-            cv::Mat image;
-            msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
-
-
             // Print image information; height and width recorded in pixels
             //
             // *** NOTES ***
@@ -258,8 +251,13 @@ int main(int argc, char** argv)
             // overwriting those of another.
             //
             convertedImage->Save(filename.str().c_str());
-
             cout << "Image saved at " << filename.str() << endl;
+
+            // TODO This part in else is not necessary after we could
+            // directly transform the ImagePtr message into ros_image message, but we don't know the format of the
+            // ImagePtr dataset. So the only thing last is to transform ImagePtr into opencv cv::Mat
+            cv::Mat image = cv::imread(filename.str(), CV_LOAD_IMAGE_COLOR);
+            msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
         }
 
         //
