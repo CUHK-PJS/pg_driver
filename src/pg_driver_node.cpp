@@ -232,27 +232,6 @@ int main(int argc, char** argv)
             //
             ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
 
-            // Create a unique filename
-            ostringstream filename;
-
-            filename << "Acquisition-";
-            if (deviceSerialNumber != "")
-            {
-                    filename << deviceSerialNumber.c_str() << "-";
-            }
-            filename << imageCnt << ".jpg";
-
-            //
-            // Save image
-            //
-            // *** NOTES ***
-            // The standard practice of the examples is to use device
-            // serial numbers to keep images of one device from
-            // overwriting those of another.
-            //
-            convertedImage->Save(filename.str().c_str());
-            cout << "Image saved at " << filename.str() << endl;
-
             // Convert to CV mat
             unsigned int XPadding = convertedImage->GetXPadding();
             unsigned int YPadding = convertedImage->GetYPadding();
