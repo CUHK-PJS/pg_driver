@@ -253,10 +253,14 @@ int main(int argc, char** argv)
             convertedImage->Save(filename.str().c_str());
             cout << "Image saved at " << filename.str() << endl;
 
-            // TODO This part in else is not necessary after we could
-            // directly transform the ImagePtr message into ros_image message, but we don't know the format of the
-            // ImagePtr dataset. So the only thing last is to transform ImagePtr into opencv cv::Mat
-            cv::Mat image = cv::imread(filename.str(), CV_LOAD_IMAGE_COLOR);
+            // Convert to CV mat
+            unsigned int XPadding = convertedImage->GetXPadding();
+            unsigned int YPadding = convertedImage->GetYPadding();
+            unsigned int rowsize = convertedImage->GetWidth();
+            unsigned int colsize = convertedImage->GetHeight();
+
+            cv::Mat image = cv::Mat(colsize + YPadding, rowsize + XPadding,
+                                    CV_8UC3, convertedImage->GetData(), convertedImage->GetStride());
             msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
         }
 
