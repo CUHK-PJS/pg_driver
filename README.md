@@ -20,8 +20,16 @@ catkin_make
 ```
 
 ## Running
+
+* Use rosrun method
 ```bash
-roslaunch pg_driver pg_driver_node
+roscore 
+rosrun pg_driver pg_driver_node
+```
+
+* Use Launch method
+```bash
+roslaunch pg_driver camera.launch 
 ```
 
 ## View the video
@@ -29,38 +37,49 @@ roslaunch pg_driver pg_driver_node
 rosrun image_view image_view image=:/camera/image
 ```
 
-## Github basic usage
-* clone
-```bash
-git clone <your-repo-url>.git
-```
-If you couldn't clone the repo, need to add the ssh id_pub key into the github ssh account.
+## Code description
+The code is orginized as three module in the main function:
+* Camera Setup
+This module will check all the free cameras in the current system, and initial them, all this part is copy from Acquisition/Acquisition.cpp file.
 
-### update the current local repo from the remote
-```bash
-git pull origin <branch>
-```
-Here, the <branch> is your current branch, default is master
+* Core module
+This is the major parts for extracting the image from driver and publish to the ros space.
 
-### add modification to the current local repo
-```bash
-git add -A
-git commit -m "your commits"
+Use the following method to extract new image from a single camera.
+```cpp
+		// Acquire images
+		ImagePtr pResultImage = pCam->GetNextImage();
 ```
-### push current local modifications to the remote
-```bash
-git push origin <branch>
+
+The following code aims to transform the driver specified images firest into the opencv format (cv::Mat), then use cv_bridge to transform into ros message.
+```cpp
+            ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
+
+            // Convert to CV mat
+            unsigned int XPadding = convertedImage->GetXPadding();
+            unsigned int YPadding = convertedImage->GetYPadding();
+            unsigned int rowsize = convertedImage->GetWidth();
+            unsigned int colsize = convertedImage->GetHeight();
+
+            cv::Mat image = cv::Mat(colsize + YPadding, rowsize + XPadding,
+                                    CV_8UC3, convertedImage->GetData(), convertedImage->GetStride());
+            msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
 ```
-### build new branch
-Usually we will have several branches under a same repo
-```bash
-git checkout -b <branch>
+
+To publish the message
+```cpp
+        pub.publish(msg);
 ```
-You can also check the branches you have
-```bash
-git branch
+
+> Note here, all the publisher handle is defined at the beginning of main function
+```cpp
+    ros::init(argc, argv, "driver");
+    ros::NodeHandle nh;
+    ros::Rate loop(1);
+    image_transport::ImageTransport it(nh);
+    image_transport::Publisher pub = it.advertise("camera/image", 1);
 ```
-To switch to another repo
-```bash
-git checkout <branch>
-```
+
+
+* Camera Release
+This module will release all the in use cameras, all this part is copy from Acquisition/Acquisition.cpp file.

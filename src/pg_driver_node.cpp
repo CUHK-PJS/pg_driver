@@ -65,6 +65,10 @@ int main(int argc, char** argv)
     image_transport::ImageTransport it(nh);
     image_transport::Publisher pub = it.advertise("camera/image", 1);
 
+    //======================================Camera Setup======================================//
+    //======================================Camera Setup======================================//
+    //======================================Camera Setup======================================//
+
     // Since this application saves images in the current folder
     // we must ensure that we have permission to write to this folder.
     // If we do not have permission, fail right away.
@@ -259,9 +263,9 @@ int main(int argc, char** argv)
         loop.sleep();
     }
 
-    //======================================================================================//
-    //======================================Core Module======================================//
-    //======================================Core Module======================================//
+    //======================================Camera Release======================================//
+    //======================================Camera Release======================================//
+    //======================================Camera Release======================================//
 
     //
     // End acquisition
