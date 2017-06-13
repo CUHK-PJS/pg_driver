@@ -43,6 +43,9 @@ The code is orginized as three module in the main function:
 ### Camera Setup
 This module will check all the free cameras in the current system, and initial them, all this part is copy from Acquisition/Acquisition.cpp file.
 
+### Camera Release
+This module will release all the in use cameras, all this part is copy from Acquisition/Acquisition.cpp file.
+
 ### Core module
 This is the major parts for extracting the image from driver and publish to the ros space.
 
@@ -51,7 +54,6 @@ Use the following method to extract new image from a single camera.
 		// Acquire images
 		ImagePtr pResultImage = pCam->GetNextImage();
 ```
-
 The following code aims to transform the driver specified images firest into the opencv format (cv::Mat), then use cv_bridge to transform into ros message.
 ```cpp
             ImagePtr convertedImage = pResultImage->Convert(PixelFormat_Mono8, HQ_LINEAR);
@@ -66,12 +68,10 @@ The following code aims to transform the driver specified images firest into the
                                     CV_8UC3, convertedImage->GetData(), convertedImage->GetStride());
             msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
 ```
-
 To publish the message
 ```cpp
         pub.publish(msg);
 ```
-
 **Note here, all the publisher handle is defined at the beginning of main function**
 ```cpp
  ros::init(argc, argv, "driver");
@@ -82,5 +82,4 @@ To publish the message
 ```
 
 
-### Camera Release
-This module will release all the in use cameras, all this part is copy from Acquisition/Acquisition.cpp file.
+
