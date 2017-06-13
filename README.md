@@ -39,10 +39,11 @@ rosrun image_view image_view image=:/camera/image
 
 ## Code description
 The code is orginized as three module in the main function:
-* Camera Setup
+
+### Camera Setup
 This module will check all the free cameras in the current system, and initial them, all this part is copy from Acquisition/Acquisition.cpp file.
 
-* Core module
+### Core module
 This is the major parts for extracting the image from driver and publish to the ros space.
 
 Use the following method to extract new image from a single camera.
@@ -71,9 +72,9 @@ To publish the message
         pub.publish(msg);
 ```
 
-> Note here, all the publisher handle is defined at the beginning of main function
+**Note here, all the publisher handle is defined at the beginning of main function**
 ```cpp
-    ros::init(argc, argv, "driver");
+ ros::init(argc, argv, "driver");
     ros::NodeHandle nh;
     ros::Rate loop(1);
     image_transport::ImageTransport it(nh);
@@ -81,5 +82,5 @@ To publish the message
 ```
 
 
-* Camera Release
+### Camera Release
 This module will release all the in use cameras, all this part is copy from Acquisition/Acquisition.cpp file.
