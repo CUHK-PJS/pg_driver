@@ -19,6 +19,14 @@ cd ..
 catkin_make
 ```
 
+***NOTE Important***
+copy the file in driver_config into the genenrated node file
+```bash
+cp driver_config/* ../../../devel/lib/pg_driver/.
+```
+With these files, we will have the right to access to the camera
+
+
 ## Running
 
 * Use rosrun method
@@ -80,6 +88,5 @@ To publish the message
     image_transport::ImageTransport it(nh);
     image_transport::Publisher pub = it.advertise("camera/image", 1);
 ```
-
 
 

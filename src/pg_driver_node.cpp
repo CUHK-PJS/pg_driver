@@ -114,6 +114,8 @@ int main(int argc, char** argv)
         return -1;
     }
 
+    ROS_INFO("Camera checked");
+
     //
     // Create shared pointer to camera
     //
@@ -243,8 +245,8 @@ int main(int argc, char** argv)
             unsigned int colsize = convertedImage->GetHeight();
 
             cv::Mat image = cv::Mat(colsize + YPadding, rowsize + XPadding,
-                                    CV_8UC3, convertedImage->GetData(), convertedImage->GetStride());
-            msg = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
+                                    CV_8UC1, convertedImage->GetData(), convertedImage->GetStride());
+            msg = cv_bridge::CvImage(std_msgs::Header(), "mono8", image).toImageMsg();
         }
 
         //
